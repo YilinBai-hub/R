@@ -1,6 +1,6 @@
 ---
 title: "Git, GitHub & Ocean Acidification"
-author: "<your name and u number>"
+author: "<Yilin Bai u7457233>"
 date: "`r Sys.Date()`"
 output: 
   bookdown::html_document2:
@@ -40,7 +40,7 @@ p_load(bookdown, tidyverse, ggforce, flextable, latex2exp, png, magick) # basica
 
 While the tasks are meant to get you familiar with how *GitHub* works you should try and make regular commits as you work your way through. We want to see how often you're using *Git*. Below, within the `()` brackets provide the link to your GitHub Repo. Just cut and paste it so we know what the repo name is and where it is. 
 
-[My GitHub Repository]()
+[My GitHub Repository](https://github.com/YilinBai-hub/R.git)
 
 By adding the link in the `()` brackets it will hyperlink "My GitHub Repository". This is how to hyperlink in Rmarkdown documents.
 
@@ -51,10 +51,12 @@ This task involves cloning your repository on your computer. Where should we pla
 
 >**Question 1**: Why should you not rely on *GitHub* as a backup?
 
-```{r, answer1, echo=TRUE, eval = FALSE}
+```{r, answer1, echo=FALSE, eval = FALSE}
 
-## Write your answer here. 
+## 1. The GitHub went down causing us to be unable to access their code and the possibility of work. Further, there are many economic losses. It has been happened many times.
+## 2. 
 
+One of the biggest interruptions of GitLab occurred in 2017. It is caused by the accidental deletion of data from the main database server. This event caused the GitLab.com service to be unavailable for hours. They also lost some production data that could not be recovered in the end. Specifically, they lost changes to the database and data, such as projects, comments, user accounts, problems and fragments.
 ```
 
 I'd usually suggest placing your repo in a cloud storage system like, *OneDrive*, *Dropbox*, or *GoogleDrive*. These will ensure that all your files are backed up and *GitHub* will provide a record of the detailed history. 
@@ -64,7 +66,7 @@ Before moving on you might have noticed that the code block above has a name `an
 >**Question 2**: In the second code block called `answer1` if we change echo = TRUE to echo = FALSE what will happen to the code block `answer1` when you render it?
 
 ```{r answer2, echo=TRUE, eval = FALSE}
-# Write your answer here
+## prevents code, but not the results from appearing in the finished file. 
 ```
 
 **Important**: Notice that `eval = FALSE` for many code chunks. When you complete the tasks. Make sure to change these to `TRUE` otherwise you will find your code does not run!
@@ -92,11 +94,9 @@ Make sure you have added a `data/` folder to your working directory that you jus
 Write your answer in the code chunk below:
 
 ```{r, loaddata, eval = FALSE, echo=TRUE}
-
-path <- "replace this text with your relative path to a file in the 'data/' folder"
-  
+path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
 data <- read_csv(path)
-
+data
 ```
 
 Let's say that you added a new data folder that was inside an output folder (i.e., `output/data`) to your working directory. The purpose of this folder is to store and track your cleaned up data frame after you have done all your data wrangling and corrections. 
@@ -104,11 +104,8 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 >**Question 4**: Using the `write_csv` function how would you write the path name to save this file to `output/data`?
 
 ```{r, write, eval = FALSE, echo=TRUE}
-
-path <- "replace this text with your relative path"
-
+path <- "./output/data.csv"
 write_csv(data, file = path)
-
 ```
 
 
@@ -119,19 +116,33 @@ We're ready for some coding! Lets do some coding and wrangling of the `OA_activi
 First, write some code below to remove missing data
 
 ```{r, rmMiss}
-# Code to removing missing data from the `OA_activitydat_20190302_BIOL3207.csv` data frame. 
-
+data_new <- data %>% filter(!(is.na(activity)))
+data_new
 ```
 
 Second, drop out irrelevant columns and check that there are no spelling issues in `species` and `treatment`. Create a table of summary data that includes: 1) the mean, 2) the standard error and 3) the sample sizes of unique fish across ALL six fish species for each treatment. This will also help you detect any spelling errors. You can use the R package [`flextable`](https://ardata-fr.github.io/flextable-book/) to print out the results in a nice neat format! If you haven't heard about `flextable` spend 10 or so minutes having a look at it's functionality. It's incredible! You'll use this for tables throughout.
 
 ```{r summaryTab}
 # Drop irrelevant columns
+drop <- c("comment","loc","sl","size")
+data_drop = data_new[,!(names(data_new) %in% drop)]
+data_drop
 
 # Check spelling in species and treatment but also generate a summary table
 
+std <- function(a) sd(a) / sqrt(length(a))
+df <- data_drop %>% group_by(species, treatment)%>%summarise(sample_size = n(),mean_activity = mean(activity),standard_error_activity = std(activity))
+df
+```
+```{r}
 # Use flextable to render the summary table in a tidy format
-
+df_flextable <-flextable(
+  df,
+  col_keys = names(df),
+  cwidth = 1.2,
+  cheight = 0.4,
+  defaults = list(),
+  theme_fun = theme_vanilla)
 ```
 
 **STOP**: Before moving on, it's a good time to establish some good *GitHub* practices. You have just done an important step. It's time to save this file, stage it and commit it so that you have a record. Push these changes up using *GitHub Desktop*. It's important to do this frequently. It's probably not needed after every line of code, but it's good to do this when you have completed an important coding step. Of course, there's no harm in doing it more often. It will provide fine-scale tracking for you!
