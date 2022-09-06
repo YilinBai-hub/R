@@ -1,0 +1,1 @@
+"0","ggplot(plot_tibble, aes(x = value)) + geom_histogram(aes(y = ..density..),bins=50) + stat_function(fun = dt, args = list(df = 98),colour=""red"")"

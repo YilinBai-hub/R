@@ -1,0 +1,2 @@
+"0","ggplot(data = penguins %>% filter(!(is.na(sex))), mapping = aes(x = species,y = body_mass_g,colour=species)) +geom_boxplot() +facet_wrap(~sex)"
+"0",""

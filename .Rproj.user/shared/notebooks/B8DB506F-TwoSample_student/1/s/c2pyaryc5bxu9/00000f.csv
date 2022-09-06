@@ -1,0 +1,2 @@
+"0","plot_boot_samp_dist <-tibble(value = boot_samp_dist, extreme = (abs(boot_samp_dist) > abs(t_test_statistic)) )"
+"0","plot_boot_samp_dist"

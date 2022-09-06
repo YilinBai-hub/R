@@ -1,0 +1,1 @@
+"0","penguins %>% filter(!(is.na(sex))) %>% count(species,island,sex)"

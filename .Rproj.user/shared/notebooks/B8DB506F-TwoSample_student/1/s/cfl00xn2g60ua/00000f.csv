@@ -1,0 +1,4 @@
+"0","original_mean <- mean(group_data$set_A)"
+"0","boot_dist_A_tibble <- tibble(value = boot_dist_A)"
+"0","ggplot(boot_dist_A_tibble,aes(x=value))+geom_histogram(bins=200)+geom_vline(aes(xintercept = original_mean))"
+"0",""

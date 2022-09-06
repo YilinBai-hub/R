@@ -1,0 +1,2 @@
+"0","ggplot(data = permuted_penguins, mapping = aes(x = body_mass_g, y = bill_depth_mm,fill = species, colour=species)) +"
+"0","  geom_point() + geom_smooth(method='lm')"

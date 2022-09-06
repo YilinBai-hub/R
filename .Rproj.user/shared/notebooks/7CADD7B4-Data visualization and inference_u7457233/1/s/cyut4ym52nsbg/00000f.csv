@@ -1,0 +1,2 @@
+"0","ggplot(data = penguins %>% filter(!(is.na(sex))), mapping = aes(x = body_mass_g, y = bill_depth_mm, colour=species,shape = sex)) +"
+"0","  geom_point() + geom_smooth(method='lm')"

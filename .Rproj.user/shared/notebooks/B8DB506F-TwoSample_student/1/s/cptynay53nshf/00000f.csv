@@ -1,0 +1,7 @@
+"0","n_reps <- 10000"
+"0","boot_dist_A <- rep(0,n_reps)"
+"0","for (i in 1:n_reps)"
+"0","{"
+"0","    boot_sample <-  group_data$set_A[sample(1:50,replace=TRUE)]"
+"0","    boot_dist_A[i] <- mean(boot_sample)"
+"0","}"

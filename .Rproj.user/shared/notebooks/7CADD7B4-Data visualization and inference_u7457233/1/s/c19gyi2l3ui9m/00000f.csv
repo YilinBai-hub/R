@@ -1,0 +1,2 @@
+"0","ggplot(data = penguins, mapping = aes(x = bill_length_mm, y = flipper_length_mm)) +"
+"0","  geom_point()+geom_smooth(method='lm')"

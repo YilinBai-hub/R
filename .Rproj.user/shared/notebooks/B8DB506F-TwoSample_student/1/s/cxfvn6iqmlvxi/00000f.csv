@@ -1,0 +1,2 @@
+"0","means_group_data <- new_group_data %>% group_by(ID) %>%  mutate(mean = mean(value))"
+"0","head(means_group_data)"

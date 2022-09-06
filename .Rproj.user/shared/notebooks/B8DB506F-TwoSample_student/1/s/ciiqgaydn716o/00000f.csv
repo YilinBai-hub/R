@@ -1,0 +1,5 @@
+"0","combined_set <- c(set_A-mean(set_A),set_B-mean(set_B))"
+"0","boot_combined <- combined_set[sample(1:100,replace=TRUE)]"
+"0","boot_A <- boot_combined[1:50]"
+"0","boot_B <- boot_combined[51:100]"
+"0","tibble(boot_A,boot_B)"

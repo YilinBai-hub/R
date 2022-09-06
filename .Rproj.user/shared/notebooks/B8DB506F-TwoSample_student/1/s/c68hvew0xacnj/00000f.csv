@@ -1,0 +1,4 @@
+"0","# We create a tibble and assign it to the variable ""plot_tibble"". In this tibble, we define the variable ""value"" as the t statistic in each t_test, define the variable ""extreme"" to be all values greater than t_test_statistic (the previous t-value statistic) in 10000 t_tests"
+"0","plot_tibble <- tibble(value = samp_dist,extreme = (abs(samp_dist) > abs(t_test_statistic)))"
+"0","# Plot a histogram by using the data in ""plot_tibble"",and separate the ""extreme"" value and not ""extreme"" value by different color."
+"0","ggplot(plot_tibble,aes(x=value,fill=extreme))+geom_histogram(bins=200)"

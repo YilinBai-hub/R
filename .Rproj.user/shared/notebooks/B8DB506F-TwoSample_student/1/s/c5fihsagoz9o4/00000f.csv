@@ -1,0 +1,4 @@
+"0","permutation <- new_group_data$ID[sample(100,replace=F)]"
+"0","permuted_group_data <- new_group_data"
+"0","permuted_group_data$ID <- permutation"
+"0","head(permuted_group_data)"

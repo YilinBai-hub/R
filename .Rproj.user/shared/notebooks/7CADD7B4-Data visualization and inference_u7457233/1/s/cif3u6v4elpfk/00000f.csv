@@ -1,0 +1,4 @@
+"0","penguins %>% filter(!(is.na(sex))) %>% mutate(year = as.factor(year)) %>% ggplot(mapping = aes(x = species,y=flipper_length_mm, colour=species)) + geom_boxplot() + "
+"0","  geom_jitter(width = 0.2, height = 0, alpha = 0.4) + facet_grid(sex ~ year) + theme(axis.title.x=element_blank(),"
+"0","        axis.text.x=element_blank(),"
+"0","        axis.ticks.x=element_blank())"

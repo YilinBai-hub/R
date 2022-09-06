@@ -1,0 +1,6 @@
+"0","set_A <- group_data$set_A"
+"0","set_B <- group_data$set_B"
+"0","mean_A <- mean(group_data$set_A)"
+"0","mean_B <- mean(group_data$set_B)"
+"0","pooled_sd <- sd(c(set_A-mean_A,set_B-mean_B))"
+"0","t_stat <- ((mean_A - mean_B)/pooled_sd) / (sqrt(1/50 + 1/50) * sqrt((50+50-1)/(50-1+50-1)))"

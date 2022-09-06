@@ -1,0 +1,2 @@
+"0","penguins %>% filter(!(is.na(sex))) %>% select(bill_length_mm,bill_depth_mm,flipper_length_mm,body_mass_g,sex) %>% ggpairs(aes(colour = sex,alpha = 0.4))"
+"0",""

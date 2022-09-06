@@ -1,0 +1,3 @@
+"0","permuted_penguins <- penguins"
+"0","permuted_penguins$species <- permuted_penguins$species[sample(length(penguins$species))]"
+"0","head(permuted_penguins)"

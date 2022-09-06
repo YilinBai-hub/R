@@ -1,0 +1,4 @@
+"0","# ggplot figure showing mean activity for each treatment (Control, OA) for each species."
+"0","ggplot(data = df, mapping = aes(y = mean_activity, x = treatment,fill = species,colour = species)) +"
+"0","  geom_point()"
+"0",""

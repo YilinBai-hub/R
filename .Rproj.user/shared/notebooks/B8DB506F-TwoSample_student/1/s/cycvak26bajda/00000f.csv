@@ -1,0 +1,2 @@
+"0","permuted_group_data <- new_group_data %>% mutate(ID = ID[sample(row_number())])"
+"0","head(permuted_group_data)"

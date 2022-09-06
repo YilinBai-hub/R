@@ -1,0 +1,8 @@
+"0","# Use flextable to render the summary table in a tidy format"
+"0","flextable("
+"0","  df,"
+"0","  col_keys = names(df),"
+"0","  cwidth = 1.2,"
+"0","  cheight = 0.4,"
+"0","  defaults = list(),"
+"0","  theme_fun = theme_vanilla)"

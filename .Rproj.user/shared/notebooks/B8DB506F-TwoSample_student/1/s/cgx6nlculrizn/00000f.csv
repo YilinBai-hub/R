@@ -1,0 +1,1 @@
+"0","ggplot(tibble(x = c(-4, 4)), aes(x = x)) + stat_function(fun = dt, args = list(df = 98),colour=""red"") + stat_function(fun = dnorm, args = list(0,1),colour=""blue"")"

@@ -1,0 +1,6 @@
+"0","# Next, merge both dataframes with the added columns (look at cbind or rbind)"
+"0","group_data <- merge(group_data_S,group_data_B,all = T)"
+"0",""
+"0","# Plot!"
+"0","ggplot(group_data,aes(x=value,fill = group))+geom_histogram(bins = 200)"
+"0",""

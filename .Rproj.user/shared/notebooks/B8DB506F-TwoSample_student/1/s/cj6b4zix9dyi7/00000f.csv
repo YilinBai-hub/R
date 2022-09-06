@@ -1,0 +1,3 @@
+"0",""
+"0","new_group_data <- pivot_longer(group_data, cols  = everything(), names_to = ""ID"",values_to = ""value"")"
+"0","head(new_group_data)"
