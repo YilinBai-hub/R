@@ -1,7 +1,0 @@
-"0",""
-"0","# Check spelling in species and treatment but also generate a summary table"
-"0",""
-"0","std <- function(a) sd(a) / sqrt(length(a))"
-"0","df <- data_drop %>% group_by(species, treatment)%>%summarise(sample_size = n(),mean_activity = mean(activity),standard_error_activity = std(activity))"
-"2","`summarise()` has grouped output by 'species'. You can override using the `.groups` argument."
-"0","df"

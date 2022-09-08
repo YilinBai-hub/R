@@ -1,2 +1,0 @@
-"0","data_new <- data %>% filter(!(is.na(activity)))"
-"0","data_new"

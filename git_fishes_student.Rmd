@@ -26,12 +26,18 @@ Throughout we are also going to learn a bit more about how to format Rmarkdown d
 
 ```{r loadpacks, message=FALSE, results='hide'}
 # Install a load of packages that we'll use. I'll show you a shortcut that I love to use. Try using the p_load function in the "pacman" package. p_load will execute both the install.packages and library commands in one shot so they only need to be used once to install pacman itself.
-install.packages("pacman", repos = "http://cran.us.r-project.org")
 library(pacman)
 
 # Install bookdown for rendering because we'll need this. While we're at it, lets also install /load the tidyverse
 p_load(bookdown, tidyverse, ggforce, flextable, latex2exp, png, magick) # basically just list all the packages you want here
+```
 
+```{r}
+library(tidyr)
+library(dplyr)
+library('plotrix')
+library('flextable')
+library(ggplot2)
 ```
 
 # **Task 1**
@@ -54,9 +60,9 @@ This task involves cloning your repository on your computer. Where should we pla
 ```{r, answer1, echo=FALSE, eval = FALSE}
 
 ## 1. The GitHub went down causing us to be unable to access their code and the possibility of work. Further, there are many economic losses. It has been happened many times.
-## 2. 
+## 2. One of the most common problems in network security incidents is usually human error/error. HEAD overwriting, accidental deletion of branches, and even deliberate deletion of frustrated employees (or former employees who can still access the repository) - are some of the most common reasons for data loss.
 
-One of the biggest interruptions of GitLab occurred in 2017. It is caused by the accidental deletion of data from the main database server. This event caused the GitLab.com service to be unavailable for hours. They also lost some production data that could not be recovered in the end. Specifically, they lost changes to the database and data, such as projects, comments, user accounts, problems and fragments.
+## One of the biggest interruptions of GitLab occurred in 2017. It is caused by the accidental deletion of data from the main database server. This event caused the GitLab.com service to be unavailable for hours. They also lost some production data that could not be recovered in the end. Specifically, they lost changes to the database and data, such as projects, comments, user accounts, problems and fragments.
 ```
 
 I'd usually suggest placing your repo in a cloud storage system like, *OneDrive*, *Dropbox*, or *GoogleDrive*. These will ensure that all your files are backed up and *GitHub* will provide a record of the detailed history. 
@@ -66,7 +72,7 @@ Before moving on you might have noticed that the code block above has a name `an
 >**Question 2**: In the second code block called `answer1` if we change echo = TRUE to echo = FALSE what will happen to the code block `answer1` when you render it?
 
 ```{r answer2, echo=TRUE, eval = FALSE}
-## prevents code, but not the results from appearing in the finished file. 
+## if we change echo = TRUE to echo = FALSE, it will prevents code, but not the results from appearing in the finished file.
 ```
 
 **Important**: Notice that `eval = FALSE` for many code chunks. When you complete the tasks. Make sure to change these to `TRUE` otherwise you will find your code does not run!
@@ -116,7 +122,8 @@ We're ready for some coding! Lets do some coding and wrangling of the `OA_activi
 First, write some code below to remove missing data
 
 ```{r, rmMiss}
-data_new <- data %>% filter(!(is.na(activity)))
+
+data_new <- data%>% filter(!(is.na(activity)))
 data_new
 ```
 
@@ -131,8 +138,8 @@ data_drop
 # Check spelling in species and treatment but also generate a summary table
 
 std <- function(a) sd(a) / sqrt(length(a))
-df <- data_drop %>% group_by(species, treatment)%>%summarise(sample_size = n(),mean_activity = mean(activity),standard_error_activity = std(activity))
-df
+data_add<- data_drop %>% group_by(species, treatment)%>%summarise(sample_size = n(),mean_activity = mean(activity),standard_error_activity = std(activity))
+data_add
 ```
 ```{r}
 # Use flextable to render the summary table in a tidy format
@@ -150,7 +157,7 @@ df_flextable <-flextable(
 >**Question 5**: The new version of your Rmarkdown file should now be up on *GitHub*. In the browser window click on your most recent commit. Have a look at the file versioning system. You will notice two files side-by-side. Describe what you notice is being presented online. What do the red and green highlights mean?
 
 ```{r answer5, echo=TRUE, eval=FALSE}
-## Write your answer here....remember to use '#" in front of your text.
+## the 
 ```
 
 # **Task 5**
@@ -161,15 +168,21 @@ Ignoring figures can be important because they take up quite a lot of space in y
 
 ```{r, prettyfig, fig.align='center', fig.cap="add a legend here"}
 # ggplot figure showing mean activity for each treatment (Control, OA) for each species.
-ggplot(data = df, mapping = aes(y = mean_activity, x = treatment,fill = species,colour = species)) +
-geom_point()
+ggplot(data = data_add, mapping = aes(y = mean_activity, x = species,fill = treatment,colour = treatment))+ geom_boxplot()
 ```
 
 **Stretch Task**: The Clark et al. 2020 paper plots some pretty pictures on their figures. You have access to a folder called "pics/". Add the pics of the difference species from the "pics/" folder to your new plot. Explore the function `annotation_raster()` which might help you achieve this goal.
 
 ```{r}
-?annotation_raster()
+pics_acantho<-readPNG("./pics/acantho.png")
+pics_ambon<-readPNG("./pics/ambon.png")
+pics_chromis<-readPNG("./pics/chromis.png")
+pics_humbug<-readPNG("./pics/humbug.png")
+pics_lemon<-readPNG("./pics/lemon.png")
+pics_whitedams<-readPNG("./pics/whitedams.png")
+ggplot(data = data_add, mapping = aes(y = mean_activity, x = species,fill = treatment,colour = treatment))+ geom_boxplot()+annotation_raster(pics_acantho,0.5,1.5,30,35)+annotation_raster(pics_ambon,1.6,2.5,30,35)+annotation_raster(pics_chromis,2.6,3.5,30,35)+annotation_raster(pics_humbug,3.6,4.5,30,35)+annotation_raster(pics_lemon,4.6,5.5,30,35)+annotation_raster(pics_whitedams,5.6,6.5,30,35)
 ```
+
 Note the code chunk used to make the figure. It has a `fig.cap` argument. That means Rmarkdown knows it's a figure and it will allow you to create a figure reference call. In other words, we can refer to our Figure \@ref(fig:prettyfig) by referring to the label for the chunk. This will automatically make a legend for us too (assuming you add one in). The same concept applied to Tables but the legend goes above these.
 
 Now that you have the figure you may also want to write / save it as a separate file. Use `ggsave` function to save the figure(s) to your new `output/figures/`:
@@ -184,7 +197,7 @@ ggsave("Fish.pdf",plot = last_plot(),path = 'output/figures/',scale = 1,width = 
 
 
 ```{r}
-## Write your answer here
+## After adding the folder path to.gitignore file, the file in the folder will not be tracked by github and being uploaded to the master repository. But if we remove the folder path from the .gitignore file, the file in the folder will be shown in the github Desktop and will be tracked again.
 ```
 
 Last question for this task. I promise! It's important to think very carefully about what you track and ignore.
@@ -192,7 +205,8 @@ Last question for this task. I promise! It's important to think very carefully a
 >**Question 7**: Assume that you added the `pics/` folder to your working directory to plot pictures of each fish on your figure. Do you want to track the files in the pic/ folder on GitHub despite them being .png files? Explain your reasoning. 
 
 ```{r, answer6}
-## Add your answer here
+## I want to track the files in the pic/ folder on GitHub. In github, we skip compilation of intermediate files, etc.If a file is automatically generated from another file, the automatically generated file does not need to be in the repository. 
+## Although the file in the PIC folder is a PNG image, it is part of the compilation file and is not an intermediate file but an initial file because it is applied as the background resource when we generate the image. Therefore, it should be regarded as a traceable file. When we modify the picture in PIC folder, the background of the generated picture will also change, and the change will lead to the change of the output. It is compilable, so it needs to be tracked.
 ```
 
 # **Task 6**
@@ -200,8 +214,12 @@ This task involves teaming up with a collaborator. Exchange *GitHub* username de
 
 Now, lets create a new figure in the code block below that simplifies the one produced in **Task 5**. Instead of all species, lets just plot three of the species (chromis, lemon, and acantho). In the figure code chunk make sure you add the necessary arguments (e.g., `fig.cap`) so that you can refer to Figure \@ref(fig:collabFig).
 
-```{r, collabFig, echo=TRUE, eval=TRUE}
+```{r, prettyfig_2, fig.align='center', fig.cap="Three_species_activities"}
+
 # You want to make changes to your collaborators figure in Task 5. Maybe you want to create a figure that focuses only on three fish species instead of the 5. More specifically, chromis, lemon, and acantho. Add code here to revise their figure to do that.
+# ggplot figure showing mean activity for each treatment (Control, OA) for each species.
+
+filter(data_add, species %in% c("chromis", "lemon", "acantho")) %>% ggplot(mapping = aes(y = mean_activity, x = species,fill = treatment,colour = treatment)) +geom_boxplot()+annotation_raster(pics_chromis,0.6,1.5,21,24)+annotation_raster(pics_lemon,1.6,2.5,21,24)+annotation_raster(pics_acantho,2.6,3.5,21,24)
 ```
 
 
@@ -228,6 +246,7 @@ Once you have figured out how to create and solve conflicts it's time to update 
 
 Think about what you would need to know to make sure you can replicate a study. Provide these details so they are easy to find on the README.
 
+
 # **Task 8**
 There's not too much to do in this task on the coding front! You just need to create a *GitHub* issue and create a 'To Do' list on *GitHub* for you and your collaborator. 
 
@@ -236,13 +255,93 @@ Here, run some statistical tests to determine, for each species, whether the con
 
 >**Stretch Task**: You can of course do this for each species seperately, but those who want a challenge, think about how you might use a loop or even some wrangling methods you have already learnt from the tidyverse to run these tests across all 6 species in a single block of code. If you're familiar with functions, you can even think about writing your own function! All these strategies will avoid having to copy and paste large chunks of code. If you're repeating anything, writing functions and loops are good ways to simplify.
 
-```{r, stats, echo=TRUE, eval=TRUE}
-# Add your code here
+
+```{r}
+# Do the t-test for all species
+acantho_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "acantho")
+acantho_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "acantho")
+
+t_test_acantho <- t.test(acantho_data_CO2$activity,acantho_data_control$activity)
+t_test_acantho
+```
+```{r}
+ambon_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "ambon")
+ambon_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "ambon")
+
+t_test_ambon <- t.test(ambon_data_CO2$activity,ambon_data_control$activity)
+t_test_ambon
+```
+```{r}
+chromis_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "chromis")
+chromis_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "chromis")
+
+t_test_chromis <- t.test(chromis_data_CO2$activity,chromis_data_control$activity)
+t_test_chromis
+```
+```{r}
+humbug_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "humbug")
+humbug_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "humbug")
+
+t_test_humbug <- t.test(humbug_data_CO2$activity,humbug_data_control$activity)
+t_test_humbug
 ```
 
-```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "write a caption here"}
-# Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here. 
+```{r}
+lemon_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "lemon")
+lemon_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "lemon")
+
+t_test_lemon <- t.test(lemon_data_CO2$activity,lemon_data_control$activity)
+t_test_lemon
+
 ```
+
+```{r}
+whitedams_data_control <- data_drop %>% filter(treatment == "control") %>% filter(species
+ == "whitedams")
+whitedams_data_CO2 <- data_drop %>% filter(treatment == "CO2") %>% filter(species
+ == "whitedams")
+
+t_test_whitedams<- t.test(whitedams_data_CO2$activity,whitedams_data_control$activity)
+t_test_whitedams
+
+```
+
+
+```{r}
+# do the t-test by using the for loop for all the species
+for (i in unique(df$species))
+{
+    print(i)
+    df_filtered <- data_drop %>%  filter(species == i)
+    outcome <- t.test(df_filtered %>% filter(treatment == "control") %>% select(activity), df_filtered %>% filter(treatment == "CO2") %>% select(activity))
+    print(outcome)
+}
+
+```
+
+```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "table caption"}
+
+# Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here.
+
+species <- c("acantho", "ambon", "chromis", "humbug", "lemon","whitedams")
+t <- c(-0.9,0.3,-0.4,2,2,-1)
+df <- c(192,41,25,137,42,119)
+p_value <- c(t_test_acantho$p.value,t_test_ambon$p.value,t_test_chromis$p.value,t_test_humbug$p.value,t_test_lemon$p.value,t_test_whitedams$p.value)
+df <- data.frame(species, t,df,p_value)
+
+print (df)
+```
+
 
 Now that you have a table, you can reference it within a document. For example, you can make a call to Table \@ref(tab:table1) by referring to the name of the code chunk. When you knit the html it will create a hyperlink to your table and insert a legend above the table for you. How cool is that!?
 
@@ -254,11 +353,12 @@ Moving forward on that you can also add in an object and whatever that objects v
 
 This is all **VERY** cool because that means if your code or data change than you can update your entire report very fast. It's also 100% reproducible. We know exactly where every single value in your report comes from. This is all pretty helpful when you want to check your code and report side-by-side. Now that you have a bit more detail fill in the following:
 
-Mean activity for `r "species name here"` in the control group was `r "add code to place mean for control"` (s / min) compared to the OA treatment group, which was `r "mean for acidificaton treatment"` (s / min). The difference between control and OA treatment means was `r "code mean difference bw treatment"` (s / min) (95% CI: `r "code for lower CI"` to `r "code for upper CI"`). 
+Mean activity for `r "lemon"` in the control group was `r "mean(lemon_data_control$activity)"` (s / min) compared to the OA treatment group, which was `r "mean(lemon_data_treatment$activity)"` (s / min). The difference between control and OA treatment means was `r "mean(lemon_data_treatment$activity)-mean(lemon_data_control$activity)"` (s / min) (95% CI: `r "t_test_acantho$conf.int[1]"` to `r "t_test_acantho$conf.int[2]"`). 
 
 Now, using what you just learnt, describe what the null hypothesis being tested was and provide statistical evidence (t-statistic, df, and p-value) to support your conclusion about whether we can reject the null hypothesis. Again, make sure you use in-line code. Write you answer below:
 
 **Write your answer here**
+
 
 
 Re-analyse the data for a single species using permutations instead of a t-test. Do your results differ?
@@ -266,12 +366,21 @@ Re-analyse the data for a single species using permutations instead of a t-test.
 >**Stretch Task**:  If you really want a challenge try doing permutation tests for each species. Again, loops, functions or tidyverse (or even combinations might help). 
 
 ```{r, stretch2, echo=TRUE, eval=FALSE}
-# Add your code here.
+for (i in unique(data_drop$species))
+{
+    permutation_test <- sample(data_drop$activity[which(data_drop$species==i)], replace = F)
+    permutation_data <- data_drop %>% filter(species==i) 
+    permutation_data$activity <- permutation_test
+    permutation_result <- t.test(permuted_group_data%>% filter(treatment == "control") %>% select(activity), permuted_group_data %>% filter(treatment == "CO2") %>% select(activity))
+    print(permutation_result)
+}
+
 ```
 
 Below. Add a few sentences for the species (or multiple species) you talked about above to describe the permutation results:
 
-**Add your text and inline code chunks here**
+After the permutation test of all the species, we find out that the p-value is still larger than 'r  p_value = 0.05;p_value', which means we accept the null hypothesis which indicate that there is no significant differences between the control group and the treatment group. We can get to the conclusion that Acidification did not play an obvious role among different kind of fishes.
+
 
 # **Task 10**
 

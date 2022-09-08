@@ -1,4 +1,0 @@
-"0","# Drop irrelevant columns"
-"0","drop <- c(""comment"",""loc"",""sl"",""size"")"
-"0","data_drop = data_new[,!(names(data_new) %in% drop)]"
-"0","data_drop"
