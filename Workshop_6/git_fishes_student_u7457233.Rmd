@@ -99,9 +99,10 @@ Make sure you have added a `data/` folder to your working directory that you jus
 
 Write your answer in the code chunk below:
 
-```{r, loaddata, eval = FALSE, echo=TRUE}
+```{r, loaddata}
 path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
-data <- read_csv(path)
+my_data <- read_csv(path)
+my_data
 data
 ```
 
@@ -111,7 +112,7 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write, eval = FALSE, echo=TRUE}
 path <- "./output/data.csv"
-write_csv(data, file = path)
+write_csv(my_data, file = path)
 ```
 
 
@@ -122,7 +123,7 @@ We're ready for some coding! Lets do some coding and wrangling of the `OA_activi
 First, write some code below to remove missing data
 
 ```{r}
-data_new <- data%>% filter(!(is.na(activity)))
+data_new <- my_data %>% filter(!(is.na(activity)))
 data_new
 ```
 
@@ -143,12 +144,15 @@ data_add
 ```{r}
 # Use flextable to render the summary table in a tidy format
 df_flextable <-flextable(
-  df,
-  col_keys = names(df),
+  data_add,
+  col_keys = names(data_add),
   cwidth = 1.2,
   cheight = 0.4,
+ 
   defaults = list(),
   theme_fun = theme_vanilla)
+
+df_flextable
 ```
 
 **STOP**: Before moving on, it's a good time to establish some good *GitHub* practices. You have just done an important step. It's time to save this file, stage it and commit it so that you have a record. Push these changes up using *GitHub Desktop*. It's important to do this frequently. It's probably not needed after every line of code, but it's good to do this when you have completed an important coding step. Of course, there's no harm in doing it more often. It will provide fine-scale tracking for you!
@@ -247,6 +251,8 @@ Once you have figured out how to create and solve conflicts it's time to update 
 
 Think about what you would need to know to make sure you can replicate a study. Provide these details so they are easy to find on the README.
 
+My answer: We use the README file at 2nd sep 14:45PM
+
 
 # **Task 8**
 There's not too much to do in this task on the coding front! You just need to create a *GitHub* issue and create a 'To Do' list on *GitHub* for you and your collaborator. 
@@ -320,7 +326,7 @@ t_test_whitedams
 
 ```{r}
 # do the t-test by using the for loop for all the species
-for (i in unique(df$species))
+for (i in unique(data_add$species))
 {
     print(i)
     df_filtered <- data_drop %>%  filter(species == i)

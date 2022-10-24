@@ -1,5 +1,0 @@
-"0","# Install a load of packages that we'll use. I'll show you a shortcut that I love to use. Try using the p_load function in the ""pacman"" package. p_load will execute both the install.packages and library commands in one shot so they only need to be used once to install pacman itself."
-"0","library(pacman)"
-"0",""
-"0","# Install bookdown for rendering because we'll need this. While we're at it, lets also install /load the tidyverse"
-"0","p_load(bookdown, tidyverse, ggforce, flextable, latex2exp, png, magick) # basically just list all the packages you want here"

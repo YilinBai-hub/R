@@ -1,5 +1,0 @@
-"0",""
-"0","new_group_data <- pivot_longer(data_use, cols  = everything())"
-"2","Error in `$<-.data.frame`(`*tmp*`, ""call_text"", value = c(""tidyr::pivot_longer(data_use, cols = everything())"",  : 
-  替换数据里有4行，但数据有3
-"
