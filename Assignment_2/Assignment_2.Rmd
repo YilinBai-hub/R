@@ -1,0 +1,30 @@
+---
+title: "Assignment_2"
+author: "Yilin Bai"
+date: "2022-10-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Statistical Analysis and Interpretation
+
+```{r}
+library(tidyr)
+library(dplyr)
+library('plotrix')
+library('flextable')
+library(ggplot2)
+library(readr)
+```
+
+```{r message=FALSE}
+path <- "/Users/lindsaybai/Desktop/Biol3207/BIOL_3207_ass2/OA_activitydat_20190302_BIOL3207.csv"
+my_data <- read_csv(path)
+my_data
+```
+
+```{r}
