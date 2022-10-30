@@ -190,12 +190,10 @@ pis
 
 **E. Use `i2_ml()`function to estimate the proportion of Total Heterogeneity:** $I_{total}^2$
 
-```{r}
+```{r het}
 i2_vals <- orchaRd::i2_ml(MLMA)
 i2 <- tibble(type = firstup(gsub("I2_", "",names(i2_vals))), I2 = i2_vals)
-```
 
-```{r, het}
 
 flextable(i2) %>% 
     align(part = "header", align = "center") %>% 
@@ -207,25 +205,28 @@ flextable(i2) %>%
 
 **A. Correct presentation and interpretation of overall meta-analytic mean and measures of uncertainty around the mean estimate (e.g., 95% confidence intervals).**
 
-I change the measure lnRR back to RR(respond ratio)
+I change the measure lnRR back to RR (respond ratio)
 
--   Overall meta-analytic mean - Estimated to be `r pis$pred`, which tells us that the mean RR value is larger than 1, indicate the average value of the control group is little higher than that of the treatment group. But it is a weak difference.
+-   Overall meta-analytic mean - Estimated to be `r pis$pred`, which tells us that the mean RR value is larger than 1, indicate the mean of the control group is little higher than that of the treatment group over all studies. But it is a weak difference.
 
--   95% confidence intervals: `r pis[[3]]` to `r pis[[4]]`. We have 95% confident true mean of the RR value falls between `r pis[[3]]` and `pis[[4]]`.
+-   95% confidence intervals: `r pis[[3]]` to `r pis[[4]]`. We have 95% confident true mean of the RR value falls between `r pis[[3]]` and `r`pis[[4]]\`.
 
--   NULL hypothesis - After test, it is found that there is no significant difference between the mean of two groups( p value = `r MLMA$pval` \> 0.05). So we accept the NULL hypothesis (lnRR = 0). Indicate that increase of acidification do not have significant effects on behavior.
+-   NULL hypothesis - After test,p value = `r MLMA$pval` \> 0.05. So we accept the NULL hypothesis (lnRR = 0). Indicate no significant difference between the mean of control group and treatment group. We can came to that conclusion that increase of acidification do not have significant effects on behavior.
 
 **B. Measures of heterogeneity in effect size estimates across studies (i.e., I2 and/or prediction intervals - see predict() function in metafor)**
 
--   The total I2 = `r i2_vals[[1]]` indicates a significant amount of heterogeneity among effects (Q = 3941, df = 122, p = \<0.001). Whereas none of the variation is driven by the sampling variance and there is lot of heterogeneity in the data.
+-   The total I2 = `r i2_vals[[1]]`% indicates a significant amount of heterogeneity among effects (Q = 3941, df = 122, p = \<0.001). Whereas none of the variation is driven by the sampling variance and there is lot of heterogeneity in the data. All the variation in due to the actual differeces between the study and within the study.
 
 -   The **RR** expected to be as low as `r predict(MLMA)[[5]]` to as high as `r predict(MLMA)[[6]]`95% of the time.
 
--   The factors drives heterogeneity variability: Differences among studies explain `r i2_vals[[2]]`% of effect size variation. And the difference within the study explain `r i2_vals[[3]]`% of the effect size variation.
+-   The factors drives heterogeneity variability:
+
+1.  Differences among studies explain `r i2_vals[[2]]`% of effect size variation.
+2.  Difference within the study (observation) explain `r i2_vals[[3]]`% of the effect size variation.
 
 **C. Forest plot showing the mean estimate, 95% confidence interval, and prediction interval with clearly labelled axes, number of samples and studies plotted on figure**
 
-```{r rochard, fig.align='center', fig.cap= "Figure 1: Forest plot showing the mean lnRR for the log response ratio between the treatment group and control group. k = the number of effect sizes and the number of studies are in brackets. The size of the effect is scaled by the precision of each effect size value, which is 1 / the sqrt(v_lnRR)"}
+```{r rochard, fig.align='center', fig.cap= "Figure 1: Forest plot showing the mean log response ratio between the treatment group and control group. k = the number of effect sizes and the number of studies are in brackets. The size of the effect is scaled by the precision of each effect size value, which is 1 / the sqrt(v_lnRR)"}
 
 orchaRd::orchard_plot(MLMA, group = "Study", data = ocean_total, xlab = "The log response ratio(lnRR)", angle = 45,trunk.size = 2,branch.size = 10,twig.size = 2)
 ```
@@ -238,9 +239,10 @@ orchaRd::orchard_plot(MLMA, group = "Study", data = ocean_total, xlab = "The log
 
 -   `vi` is inverse Variance.
 
--   `atransf` will transform lnRR back to the **transformed ratio between the means**.
+-   `atransf` will transform lnRR back to the **transformed ratio between the means(RR)**.
 
-```{r funnel, echo=TRUE, fig.align='center', fig.cap= "Figure 2: Funnel plot depicting the transformed ratio(RR) between the means of control and treatment group as a function of precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant." }
+```{r myfunnel, echo=TRUE, fig.align='center', fig.cap= "Figure 2: Funnel plot depicting the transformed ratio(RR) between the means of control and treatment group as a function of precision (1 / SE). The dotted lines are the theoretical 95% sampling variance intervals - the interval with which we expect effect size estimates to fall within if only sampling variance drives differences in effects. Shaded regions represent the p-value of studies. The white region indicates studies where the p-value is between 0.1 and 1; dark gray where the p-value of studies is between 0.05 and 0.1 and the lighter gray regions where the p-value of studies is significant. Adjust the ylim and xlim manually and several out group values are excluded for a better look" }
+
 
 metafor::funnel(x = ocean_total$lnRR, vi = ocean_total$V_lnRR, digits = 4, yaxis = "seinv", 
                 level = c(0.1, 0.05, 0.01),
@@ -248,15 +250,9 @@ metafor::funnel(x = ocean_total$lnRR, vi = ocean_total$V_lnRR, digits = 4, yaxis
                 xlab = "The transformed ratio of means", legend = TRUE,ylim =c (0.1,30), atransf= exp,xlim = c(-3.5,3.5))
 ```
 
-There is a few messages we can get from the forest plot:
+From Figure 2, I suspect there is no obvious file drawer effect.
 
--   From Figure above, the most effects lie space which **The transformed ratio of means was less than 1.** So, the mean of control group is larger than treatment group in most studies.
-
--   There is still some studies that show the opposite pattern which the **transformed ratio of means was larger than 1**. I expect that based on sampling theory alone, and indeed many of these effects fall close to the dotted sampling error intervals. Studies in the light grey regions are studies where the p-value was significant.
-
--   There is a noticeable blank space in the bottom right corner with the **lnRR larger than 1** These studies have opposite results, they are not sure of the correctness and authenticity of the research because the sample is too small and the sample variance is too large. They also failed to find a significant difference between the mean of treatment and control group. So these studies are not being published. Just like the **file-drawer situation**, these drive what we call funnel asymmetry, showing a bunch of missing effect sizes in the bottom left corner of the funnel.
-
--   But also if the magnitude of RR is large enough in the opposite direction (RR\>1) even with small sample sizes these can get published, which has a p value less than 0.05. These arguably "surprising" results are more likely to be published if the difference in the mean between the two treatments is large enough, and in the opposite direction of what one would expect, than if the difference is small and in opposite direction.
+The two sides of the data distribution is basically very uniform, there is no obvious blank area. The amount of data on both sides is almost equal.
 
 **B. Plot of log transformed ratio of means against sampling variance for lnRR**
 
@@ -268,9 +264,9 @@ ggplot(ocean_total, aes(y = lnRR, x = V_lnRR)) +
   theme_classic()
 ```
 
-There is a significant slope coefficient. That's because there is an unequal distribution of effect sizes on either side of the plot and the mean lnRR when the sampling variance is high gets shifted resulting in the slope being different from 0.
+As we can see from Figure 3, there is not a significant slope coefficient. However, there are still unequal effect size distributions on both sides of the figure, and when the sampling variance is high, the average lnRR shifts, resulting in a slope that is not equal to 0. But in this study, the shift was not large. I concluded that no significant 'the file drawer effect' appeared in these studies.
 
-The slope coefficient is less than 0, indicating that most studies have an effect size smaller than 0. Shows a pattern that the mean in the treatment group is smaller than the control group.
+It's not a big slope, but it still tends to be less than zero, indicating that most studies have an effect size (lnRR) smaller than 0. Shows a pattern that the mean in the treatment group is smaller than the control group in most studies.
 
 #### 8. Time-lag plot assessing how effect sizes may or may not have changed through time
 
@@ -284,24 +280,17 @@ ggplot(ocean_total, aes(y = lnRR, x = Year..online., size = 1/sqrt(V_lnRR))) + g
 num_less <- sum(1/sqrt(ocean_total$V_lnRR)>500)
 ```
 
-**There are a few key things which support our suspicions about time-lag bias being present in these data:**
+**The key things which support suspicions about a weak time-lag bias being present in these data:**
 
-1)  There does appear to be a clear negative relationship with year.
+1)  There does appear to be a weak negative relationship with year.
 
-2)  The earlier year studies have much higher sampling variance. Because the sample size is much more smaller, indicate a larger sampling variance and lower precision.
+2)  There is not much difference between the precision in the early years and the precision in the recent years. There was even an earlier study that had the greatest precision, but it wasn't statistically significant.
 
-3)  These early studies appear to have a far higher (exaggerated) effect size compared with studies that are done in later years.
+3)  Earlier studies had some relatively large effect sizes, but they were few in number, and most effect sizes were closely distributed.
 
-But in this figure, the difference between the precision is hard to tell. I found that there are only `r num_less` study with a `1/SE` larger than 0, but these precision are extremely large, infecting the precision visualization of other studies. So I try to filter out these five data to observe better the relationship between effect size and year in the remaining studies.
+4)  There seems to be no significant relationship between the size of the variance and the year, and the variance in early years is not much larger than in recent years.
 
-```{r, yearbubblemod,fig.align='center',fig.cap="Figure 5: A Plot of lnRR filtered out data with tremendous precision as a function of publication year. Points are scaled about their precision (1/sqrt(V_lnRR)). Small points indicate effects with low precision or high sampling variance. After being manually modified, this figure can intuitively see the precision change over the years.",warning=FALSE,message=FALSE}
-
-ocean_total_test <- ocean_total %>% filter(1/sqrt(V_lnRR)<500)
-
-ggplot(ocean_total_test, aes(y = lnRR, x = Year..online., size = 1/sqrt(V_lnRR))) + geom_point(alpha = 0.30) + geom_smooth(method = lm, col = "red", show.legend = FALSE) + labs(x = "Publication Year", y = "Log transformed ratio of means", size = "Precision (1/SE)") + theme_classic()
-```
-
-#### 9. Formal meta-regression model that includes year as a moderator (fixed effect) to test for time-lag bias**
+#### 9. Formal meta-regression model that includes year as a moderator (fixed effect) to test for time-lag bias\*\*
 
 First, add a column indicating the difference between each year and the average year.
 
@@ -319,9 +308,12 @@ MLMA_time <- metafor::rma.mv(lnRR ~ Year_diff, V = V_lnRR,
                     test = "t", dfs = "contain", 
                     data = ocean_total)
 summary(MLMA_time)
+```
 
+```{r}
 r2_time <- orchaRd::r2_ml(MLMA_time)
 r2_time
+
 ```
 
 #### 10. Formal meta-regression model that includes inverse sampling variance (1/v_lnRR) to test for file-drawer biases.
@@ -334,12 +326,12 @@ MLMA_drawer <- metafor::rma.mv(lnRR~1/V_lnRR, V = V_lnRR,
                                ~1|residual), 
                    data=ocean_total)
 MLMA_drawer
+```
 
+```{r}
 r2_drawer <- orchaRd::r2_ml(MLMA_drawer)
-
-i2_drawer <- tibble(type = firstup(gsub("I2_", "",names(r2_drawer))), I2 = r2_drawer)
-i2_drawer
-
+i2_drawer <- tibble::tibble(type = orchaRd::firstup(gsub("I2_", "",names(r2_drawer))), I2 = r2_drawer)
+r2_drawer[[1]]
 ```
 
 Create a model that accounts for **both** of two effects(`sample variance` and `year`), and that accounts for the possible covariance between the two. And use `r2_ml()` functions to evaluate how much Heterogeneity does time when results were published explain in lnRR.
@@ -352,26 +344,35 @@ MLMA_both <- metafor::rma.mv(lnRR ~ Year_diff + 1/V_lnRR, V = V_lnRR,
                     test = "t", dfs = "contain", 
                     data = ocean_total)
 
-
 summary(MLMA_both)
+```
 
+```{r}
 r2_time_sv <- orchaRd::r2_ml(MLMA_both)
 r2_time_sv
 ```
 
 #### 11. A written paragraph that discusses the potential for publication bias based on the meta-regression results. What type of publication bias, if any, appears to be present in the data? If publication bias is present, what does it mean and what might be contributing to such bias?
 
-First, I expect under a file-drawer bias. Researchers will not published the poorer quality studies showing opposite effects. Include studies with low power (i.e., low precision, wide standard errors, and small sample sizes) and non-significant differences between treatment group and control group.
+Two kinds of publication bias was test in previous work: **the file-drawer bias and time-lag bias.**
 
-The evidence for file-drawer bias in data:
+In the meta-regression model that includes inverse sampling variance (1/v_lnRR):
 
-The slope estimate for `V_lnRR` is significant. We can see from this model that the adjusted `lnRR` when there is *no* uncertainty (i.e., the intercept) is `r MLMA_drawer$b[1]` with a 95% confidence interval that overlaps zero (i.e., 95% CI = `r MLMA_drawer$ci.lb[1]` to `r MLMA_drawer$ci.ub[1]`). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the mean of effect size to be `r tanh(MLMA_drawer$b[1])`.
+1.  The slope estimate for `V_lnRR` is not that significant. We can see from this model that the adjusted `lnRR` when there is *no* uncertainty (i.e., the intercept) is `r MLMA_drawer$b[1]` with a 95% confidence interval that overlaps zero (i.e., 95% CI = `r MLMA_drawer$ci.lb[1]` to `r MLMA_drawer$ci.ub[1]`). In other words, if no uncertainty around estimates exists, or we have a very high powered set of studies than we would expect the mean of effect size to be `r tanh(MLMA_drawer$b[1])`.
 
-Second, it's clear that we have evidence of a time-lag bias.As time goes by, the precision (1/sqrt(V_lnRR)) of the obtained data will be higher and higher and the variance will be smaller and smaller due to the larger sample size. The distribution of effect size will also narrow.
+2.  We test that `r r2_drawer[[1]]`% of heterogeneity is produced by the inverse of sample variance. We can get to the conclusion that **no file-drawer bias is present in this study**.
 
-The evidence for time-lag bias in data: 1. The mean effect size is predicted to decrease as more studies accumulate. 2. Time-lag explains `r r2_time[1]`% of the variation in lnRR. 3. The intercept when `year_diff` = 0 is `r tanh(MLMA_both$b[1])`. We can see that sampling variance explains `r r2_time[1]*100`% of effect size variance. Conditional $R^2$ shows that the full model, that accounts for the both the fixed and random effects, explains `r r2_time[2]*100`% of variance in effect size.
+In the meta-regression model that includes year as a moderator (fixed effect) to test for time-lag bias:
 
-I also create a model which including sampling variance and year as moderators. The overall mean lnRR (r) when small sample and time-lag biases are controlled for is `r MLMA_both$b[1]`. Which is different from the intercept in model only including sampling variance. So the sampling variance and year both contribute to publication bias.
+1.  The mean effect size is predicted to a very weak decrease as more studies accumulate.
+
+2.  We test that `r r2_time[[1]]*100`% of heterogeneity is produced by the publication year. It is a very low rate of heterogeneity which indicate a very weak time-lag bias. Conditional $R^2$ shows that the full model, that accounts for the both the fixed and random effects, explains `r r2_time[2]*100`% of variance in effect size.
+
+3.  There is a weak evidence of a time-lag bias. As time goes by, there is no significant difference between precision (1/sqrt(V_lnRR)) or the sample variance of different years. So we can draw the conclusion that **almost no** **time-lag bias is present in this study.**
+
+I also create a model which including sampling variance and year as moderators. The overall mean lnRR (r) when small sample and time-lag biases are controlled for is `r MLMA_both$b[1]`. Which is not that different from the intercept in model only including sampling variance.
+
+**So I get to the conclusion that the file-drawer bias and time-lag bias both not contribute to publication bias.**
 
 #### 12. Identify any studies contributing to publication bias. How do your updated meta-analysis results compare with a meta-analysis by Clement et. al. (2022)? Are there any concerns about these studies? If so, describe using references to existing papers what concerns have been raised?
 
@@ -385,10 +386,12 @@ I also create a model which including sampling variance and year as moderators. 
 
 **Concerns in meta-analysis:**
 
-1.  First, in my meta-analysis, `I^2 total` = 100%, which indicates that there is no sampling variance. But considering the actual situation, I think this is not real.
+1.  First, in my meta-analysis, `I^2 total` = 100%, which indicates that there is no sampling variance. But considering the actual situation, I think this is not reliable.
 2.  Secondly, in the meta-analysis, the size difference between the largest variance and the smallest variance is too large, which will lead to the instability of the meta-analysis modeling results.
-3.  Thirdly, although file drawer bias and time-lag bias were shown, the deviation values were not very large and there was no obvious trend. However, Clement et. al. (2022) showed a clear decreasing trend.
+3.  Thirdly, which is the most different thing, the file drawer bias and time-lag bias were not shown in my study, the deviation values were not very large and there was no obvious trend. However, Clement et. al. (2022) showed a clear decreasing trend
 
 **Differences in meta-analysis results:**
 
-Clement et. al. (2022) discussed three aspects of bias in his study: (1) methodological bias; (2) selective publication bias; (3) citation bias. Our study only tested selective publication bias. We verified in terms of file-drawer bias and time-delay bias, and found a decreasing effect similar to the conclusion in the original paper.
+1.  Clement et. al. (2022) discussed three aspects of bias in his study: (1) methodological bias; (2) selective publication bias; (3) citation bias. Our study only tested selective publication bias.
+
+2.  Clement et. al. (2022) reveals an extreme "decline effect" in the impacts of ocean acidification on fish behavior. But after verified in terms of file-drawer bias and time-delay bias, we do not found a decreasing effect similar to the conclusion in the original paper. Both effect of file-drawer bias and time-delay bias are weak.
